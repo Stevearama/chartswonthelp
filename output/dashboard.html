@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<title>The Charts Wont Help</title>
+<meta name='viewport' content='width=device-width, initial-scale=1.0'>
+<style>
+body { font-family: 'Segoe UI', Roboto, sans-serif; margin: 0; background: #f4f6f8; color: #333; }
+header { background: #fff; padding: 12px 16px; font-size: 24px; font-weight: 600;
+         box-shadow: 0 2px 4px rgba(0,0,0,0.06); border-bottom: 1px solid #ddd; text-align: left; position: relative; }
+header span { font-size: 14px; font-weight: normal; float: right; color: #666; margin-top: 4px; }
+nav.tabs { display: flex; gap: 10px; padding: 10px 10px; background: #e9ecef; border-bottom: 1px solid #ccc; }
+nav.tabs button { padding: 8px 16px; background: #fff; border: 1px solid #ccc; border-radius: 4px;
+                  cursor: pointer; font-weight: 500; }
+nav.tabs button.active { background: #007bff; color: white; border-color: #007bff; }
+nav.subtabs { display: flex; gap: 10px; padding: 10px 10px; background: #f8f9fa; }
+nav.subtabs button { padding: 6px 12px; background: #fff; border: 1px solid #bbb; border-radius: 4px;
+                     cursor: pointer; font-size: 14px; }
+nav.subtabs button.active { background: #343a40; color: white; }
+.tab-content, .subtab-content { display: none; }
+.tab-content.active, .subtab-content.active { display: block; }
+.grid-row { display: grid; gap: 20px; padding: 10px; }
+.card { position: relative; aspect-ratio: 16 / 10;
+        background: #fff; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        overflow: hidden; transition: transform 0.2s ease; width: 100%; }
+.card:hover { transform: translateY(-4px); }
+.card iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+</style>
+<script>
+function showTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('nav.tabs button').forEach(b => b.classList.remove('active'));
+  document.getElementById(tabId).classList.add('active');
+  document.getElementById('btn_' + tabId).classList.add('active');
+}
+function showSubtab(tabId, subtabId) {
+  document.querySelectorAll(`#${tabId} .subtab-content`).forEach(t => t.classList.remove('active'));
+  document.querySelectorAll(`#${tabId} nav.subtabs button`).forEach(b => b.classList.remove('active'));
+  document.getElementById(`${tabId}_${subtabId}`).classList.add('active');
+  document.getElementById(`btn_${tabId}_${subtabId}`).classList.add('active');
+}
+</script>
+</head>
+<body>
+<header>The Charts Wont Help<span>Jun 22, 2025. 21:39</span></header>
+<nav class='tabs'>
+<button id='btn_Margins' class='active' onclick="showTab('Margins')">Margins</button>
+<button id='btn_Outages' class='' onclick="showTab('Outages')">Outages</button>
+<button id='btn_Weekly Stats' class='' onclick="showTab('Weekly Stats')">Weekly Stats</button>
+</nav>
+<div class='tab-content active' id='Margins'>
+<nav class='subtabs'>
+<button id='btn_Margins_USGC' class='active' onclick="showSubtab('Margins', 'USGC')">USGC</button>
+<button id='btn_Margins_US MidCon' class='' onclick="showSubtab('Margins', 'US MidCon')">US MidCon</button>
+<button id='btn_Margins_USWC' class='' onclick="showSubtab('Margins', 'USWC')">USWC</button>
+</nav>
+<div class='subtab-content active' id='Margins_USGC'>
+<div class='grid-row' style='grid-template-columns: repeat(3, minmax(0, 1fr));'>
+<div class='card'><iframe src='Margins_USGC.html'></iframe></div>
+<div class='card'><iframe src='Margin_boxplot_USGC.html'></iframe></div>
+<div></div>
+</div>
+<div class='grid-row' style='grid-template-columns: repeat(2, minmax(0, 1fr));'>
+<div class='card'><iframe src='Margins_USGC.html'></iframe></div>
+<div class='card'><iframe src='Margin_boxplot_USGC.html'></iframe></div>
+</div>
+</div>
+<div class='subtab-content ' id='Margins_US MidCon'>
+<div class='grid-row' style='grid-template-columns: repeat(3, minmax(0, 1fr));'>
+<div class='card'><iframe src='Margins_Midcon.html'></iframe></div>
+<div></div>
+<div class='card'><iframe src='Margin_boxplot_Midcon.html'></iframe></div>
+</div>
+</div>
+<div class='subtab-content ' id='Margins_USWC'>
+<div class='grid-row' style='grid-template-columns: repeat(3, minmax(0, 1fr));'>
+<div></div>
+<div class='card'><iframe src='Margins_USAC.html'></iframe></div>
+<div class='card'><iframe src='Margin_boxplot_USAC.html'></iframe></div>
+</div>
+</div>
+</div>
+<div class='tab-content ' id='Outages'>
+<nav class='subtabs'>
+<button id='btn_Outages_PADD 1' class='active' onclick="showSubtab('Outages', 'PADD 1')">PADD 1</button>
+<button id='btn_Outages_PADD 2' class='' onclick="showSubtab('Outages', 'PADD 2')">PADD 2</button>
+</nav>
+<div class='subtab-content active' id='Outages_PADD 1'>
+<div class='grid-row' style='grid-template-columns: repeat(3, minmax(0, 1fr));'>
+<div class='card'><iframe src='Planned_PADD1.html'></iframe></div>
+<div class='card'><iframe src='Planned Decomp_PADD1.html'></iframe></div>
+<div></div>
+</div>
+<div class='grid-row' style='grid-template-columns: repeat(3, minmax(0, 1fr));'>
+<div class='card'><iframe src='Unplanned_PADD1.html'></iframe></div>
+<div class='card'><iframe src='Unplanned Decomp_PADD1.html'></iframe></div>
+<div></div>
+</div>
+<div class='grid-row' style='grid-template-columns: repeat(3, minmax(0, 1fr));'>
+<div class='card'><iframe src='Total_PADD1.html'></iframe></div>
+<div class='card'><iframe src='Total Decomp_PADD1.html'></iframe></div>
+<div></div>
+</div>
+</div>
+<div class='subtab-content ' id='Outages_PADD 2'>
+<div class='grid-row' style='grid-template-columns: repeat(3, minmax(0, 1fr));'>
+<div class='card'><iframe src='Planned_PADD2.html'></iframe></div>
+<div class='card'><iframe src='Planned Decomp_PADD2.html'></iframe></div>
+<div></div>
+</div>
+<div class='grid-row' style='grid-template-columns: repeat(3, minmax(0, 1fr));'>
+<div class='card'><iframe src='Unplanned_PADD2.html'></iframe></div>
+<div class='card'><iframe src='Unplanned Decomp_PADD2.html'></iframe></div>
+<div></div>
+</div>
+<div class='grid-row' style='grid-template-columns: repeat(3, minmax(0, 1fr));'>
+<div class='card'><iframe src='Total_PADD2.html'></iframe></div>
+<div></div>
+<div class='card'><iframe src='Total Decomp_PADD2.html'></iframe></div>
+</div>
+</div>
+</div>
+<div class='tab-content ' id='Weekly Stats'>
+<nav class='subtabs'>
+<button id='btn_Weekly Stats_Crude' class='active' onclick="showSubtab('Weekly Stats', 'Crude')">Crude</button>
+</nav>
+<div class='subtab-content active' id='Weekly Stats_Crude'>
+<div class='grid-row' style='grid-template-columns: repeat(4, minmax(0, 1fr));'>
+<div class='card'><iframe src='EIA_US_Crude_Commercial_Stocks.html'></iframe></div>
+<div class='card'><iframe src='EIA_Cushing_Stocks.html'></iframe></div>
+<div class='card'><iframe src='EIA_P2_Crude_Days_Cover.html'></iframe></div>
+<div class='card'><iframe src='EIA_US_Crude_Days_Cover.html'></iframe></div>
+</div>
+<div class='grid-row' style='grid-template-columns: repeat(4, minmax(0, 1fr));'>
+<div class='card'><iframe src='EIA_US_Crude_Gross_Supply_-_Gross_Demand.html'></iframe></div>
+<div class='card'><iframe src='EIA_US_Crude_Net_Imports.html'></iframe></div>
+<div class='card'><iframe src='EIA_US_Crude_Stock_Build.html'></iframe></div>
+<div class='card'><iframe src='EIA_US_Crude_Balance_Error.html'></iframe></div>
+</div>
+<div class='grid-row' style='grid-template-columns: repeat(4, minmax(0, 1fr));'>
+<div class='card'><iframe src='EIA_US_Crude_Production.html'></iframe></div>
+<div class='card'><iframe src='EIA_US_Crude_Imports_From_Canada.html'></iframe></div>
+<div class='card'><iframe src='EIA_US_Crude_Imports_From_Non-Canada.html'></iframe></div>
+<div class='card'><iframe src='EIA_US_Gross_Crude_Supply.html'></iframe></div>
+</div>
+<div class='grid-row' style='grid-template-columns: repeat(4, minmax(0, 1fr));'>
+<div class='card'><iframe src='EIA_US_Refinery_Crude_Runs.html'></iframe></div>
+<div class='card'><iframe src='EIA_US_Crude_Export.html'></iframe></div>
+<div class='card'><iframe src='EIA_US_Crude_Net_Imports.html'></iframe></div>
+<div class='card'><iframe src='EIA_US_Gross_Crude_Demand.html'></iframe></div>
+</div>
+</div>
+</div>
+</body></html>
