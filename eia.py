@@ -11,11 +11,11 @@ def add_eia_crude_calcs(df: pd.DataFrame) -> pd.DataFrame:
         df_wide["US Crude Imports (inc SPR). kbd"] - df_wide["US Crude Imports From Canada. kbd"]
     )
 
-    df_wide["US Gross Crude Supply. kbd"] = (
+    df_wide["US Crude Production PLUS Imports (Total Supply). kbd"] = (
         df_wide["US Crude Production. kbd"] + df_wide["US Crude Imports (inc SPR). kbd"] + df_wide["US NGL Transfers to Crude. kbd"]
     )
 
-    df_wide["US Gross Crude Demand. kbd"] = (
+    df_wide["US Crude Runs PLUS Exports (Total Demand). kbd"] = (
         df_wide["US Refinery Crude Runs. kbd"] + df_wide["US Crude Export. kbd"]
     )
 
@@ -50,8 +50,8 @@ def add_eia_crude_calcs(df: pd.DataFrame) -> pd.DataFrame:
     # List of derived columns to melt back
     derived_cols = [
         "US Crude Imports From Non-Canada. kbd",
-        "US Gross Crude Supply. kbd",
-        "US Gross Crude Demand. kbd",
+        "US Crude Production PLUS Imports (Total Supply). kbd",
+        "US Crude Runs PLUS Exports (Total Demand). kbd",
         "US Crude Gross Supply - Gross Demand. kbd",
         "US Crude Stock Build. kb",
         "US Crude Balance Error. kbd",

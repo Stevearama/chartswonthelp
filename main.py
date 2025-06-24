@@ -41,42 +41,46 @@ GROWTH_MODE = 'flat'                        #linear, logistic, flat
 def main():
 # # ----------------------------------------------------------------------------------------------------------------------#
 #     # Import IIR Outages from file, and convert to a weekly timeseries
-#     MODEL_REGIONS = [
-#         'PADD1', 'PADD2', 'PADD3', 'PADD4', 'PADD5', 'USA',
-#         'Western Canada', 'Central Canada', 'Eastern Canada', 'Canada',
-#         'Mexico',
-#     ]
-#     units = ["Atmospheric Distillation", "Condensate Splitter"] #, "Other Unit Type"]
-#
-#     df_outages = outage_utils.import_outages('NthAmericaOutage.xlsx', units)
-#     df_IIR_summary_TS = outage_utils.build_outage_timeseries(
-#         df_outages,
-#         DATA_START_DATE,
-#         FORECAST_END_DATE,
-#         countries,
-#         regions=MODEL_REGIONS,
-#     )
-#     df_IIR_summary_TS = outage_utils.daily_to_weekly(df_IIR_summary_TS)
-#     df_IIR_summary_TS = outage_utils.round_numeric(df_IIR_summary_TS, 1)
-#     df_IIR_summary_TS.to_excel(os.path.join(OUTPUT_DIR, "IIR_summary_TS.xlsx"), index=False)
-#
+    MODEL_REGIONS = [
+        'PADD1', 'PADD2', 'PADD3', 'PADD4', 'PADD5', 'USA',
+        'Western Canada', 'Central Canada', 'Eastern Canada', 'Canada',
+        'Mexico',
+    ]
+    units = ["Atmospheric Distillation", "Condensate Splitter"] #, "Other Unit Type"]
+
+    df_outages = outage_utils.import_outages('NthAmericaOutage.xlsx', units)
+    df_IIR_summary_TS = outage_utils.build_outage_timeseries(
+        df_outages,
+        DATA_START_DATE,
+        FORECAST_END_DATE,
+        countries,
+        regions=MODEL_REGIONS,
+    )
+    df_IIR_summary_TS = outage_utils.daily_to_weekly(df_IIR_summary_TS)
+    df_IIR_summary_TS = outage_utils.round_numeric(df_IIR_summary_TS, 1)
+    df_IIR_summary_TS.to_excel(os.path.join(OUTPUT_DIR, "IIR_summary_TS.xlsx"), index=False)
+
 # # ----------------------------------------------------------------------------------------------------------------------#
 #     # Split to planned outages.  And split to actual historical outages based on the split date
-#     df_IIR_summary_TS_planned = df_IIR_summary_TS.query('EVENT_TYPE == "Planned"').copy()
-#
-#     # Model Planned outage Forecast
-#     df_planned_forecast, model_dict = prophet_forecast.forecast_planned_outages(
-#         df_IIR_summary_TS_planned,
-#         planned_split_date,
-#         FORECAST_END_DATE,
-#         growth_mode=GROWTH_MODE,
-#         top_n_cap=5  # Removes the highest outages from the forecast model.
-#     )
-#     df_planned_forecast = outage_utils.round_numeric(df_planned_forecast, 0)
-#     df_planned_forecast.to_excel(os.path.join(OUTPUT_DIR, "planned_outage_prophet.xlsx"), index=False)
-#     charts.plot_forecast(df_planned_forecast, output_dir=OUTPUT_DIR, chart_prefix="Planned")
-#     charts.plot_prophet_decomposition(df_planned_forecast, output_dir=OUTPUT_DIR, chart_prefix="Planned Decomp")
-#
+    df_IIR_planned = df_IIR_summary_TS.query('EVENT_TYPE == "Planned"').copy()
+    # Split planned outages here, so that the forecast_planned_outage function doesn't need to do it.  This means the prophet model only gets the data  to use for forecasting.
+    df_IIR_planned_historic = df_IIR_planned[df_IIR_planned['DATE'] < pd.to_datetime(planned_split_date)]
+    df_IIR_planned_future = df_IIR_planned[df_IIR_planned['DATE'] >= pd.to_datetime(planned_split_date)]
+
+    # Model Planned outage Forecast
+    df_planned_forecast, model_dict = prophet_forecast.forecast_planned_outages(
+        df_IIR_planned_historic,
+       # planned_split_date, # no longer needed
+        FORECAST_END_DATE,
+        growth_mode=GROWTH_MODE,
+        top_n_cap=5  # Removes the highest outages from the forecast model.
+    )
+    df_planned_forecast = outage_utils.round_numeric(df_planned_forecast, 0)
+    df_planned_forecast = # add the df_IIR_planned_future back in, so we can see the existing planned outages
+
+    charts.plot_forecast(df_planned_forecast, output_dir=OUTPUT_DIR, chart_prefix="Planned")
+    charts.plot_prophet_decomposition(df_planned_forecast, output_dir=OUTPUT_DIR, chart_prefix="Planned Decomp")
+
 # # ----------------------------------------------------------------------------------------------------------------------#
 #     # Split to unplanned outages.  And split to actual historical outages based on the split date
 #     df_IIR_summary_TS_unplanned = df_IIR_summary_TS.query('EVENT_TYPE == "Unplanned"').copy()
@@ -319,8 +323,8 @@ def main():
             "Crude": [
                 ["EIA_US_Crude_Commercial_Stocks.html", "EIA_Cushing_Stocks.html", "EIA_P2_Crude_Days_Cover.html", "EIA_US_Crude_Days_Cover.html"],
                 ["EIA_US_Crude_Gross_Supply_-_Gross_Demand.html", "EIA_US_Crude_Net_Imports.html", "EIA_US_Crude_Stock_Build.html", "EIA_US_Crude_Balance_Error.html"],
-                ["EIA_US_Crude_Production.html", "EIA_US_Crude_Imports_From_Canada.html", "EIA_US_Crude_Imports_From_Non-Canada.html", "EIA_US_Gross_Crude_Supply.html"],
-                ["EIA_US_Refinery_Crude_Runs.html", "EIA_US_Crude_Export.html", "EIA_US_Crude_Net_Imports.html", "EIA_US_Gross_Crude_Demand.html"],
+                ["EIA_US_Crude_Production.html", "EIA_US_Crude_Imports_From_Canada.html", "EIA_US_Crude_Imports_From_Non-Canada.html", "US Crude Production PLUS Imports (Total Supply).html"],
+                ["EIA_US_Refinery_Crude_Runs.html", "EIA_US_Crude_Export.html", "EIA_US_Crude_Net_Imports.html", "US Crude Runs PLUS Exports (Total Demand).html"],
             ],
         },
     }
